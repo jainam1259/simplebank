@@ -9,15 +9,15 @@ import (
 // Store struct gives access to raw db connection object - to create a transaction object
 // Also gives access to Queries object, which allows us to use individual functions
 type Store struct {
-	db *sql.DB
-	*Queries
+	db      *sql.DB
+	queries *Queries
 }
 
 // NewStore is a constructor that initializes and returns pointer to a Store instance.
 func NewStore(db *sql.DB) *Store {
 	return &Store{
 		db:      db,
-		Queries: New(db),
+		queries: New(db),
 	}
 }
 
@@ -93,7 +93,22 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			return err
 		}
 
-		// TODO:- Change balance in accounts
+		result.FromAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID:     arg.FromAccountID,
+			Amount: -arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+
+		result.ToAccount, err = q.AddAccountBalance(ctx, AddAccountBalanceParams{
+			ID:     arg.ToAccountID,
+			Amount: arg.Amount,
+		})
+		if err != nil {
+			return err
+		}
+
 		return nil
 	})
 
