@@ -10,14 +10,14 @@ import (
 // Also gives access to Queries object, which allows us to use individual functions
 type Store struct {
 	db      *sql.DB
-	queries *Queries
+	Queries *Queries
 }
 
 // NewStore is a constructor that initializes and returns pointer to a Store instance.
 func NewStore(db *sql.DB) *Store {
 	return &Store{
 		db:      db,
-		queries: New(db),
+		Queries: New(db),
 	}
 }
 

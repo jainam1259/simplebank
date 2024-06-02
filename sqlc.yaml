@@ -17,3 +17,5 @@ packages:
     # emit_interface :- This generates a Querier interface which is a pass way in to all the CRUD operations.
     # It helps us to mock the db for testing higher level functions
     emit_interface: false
+    # emit_empty_slices :- This ensures that slices returned by :many queries return empty Slices instead of null/nil
+    emit_empty_slices: true
