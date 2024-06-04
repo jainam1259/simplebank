@@ -6,23 +6,28 @@ import (
 	"fmt"
 )
 
-// Store struct gives access to raw db connection object - to create a transaction object
+type Store interface {
+	Querier
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+}
+
+// SQLStore struct gives access to raw db connection object - to create a transaction object
 // Also gives access to Queries object, which allows us to use individual functions
-type Store struct {
-	db      *sql.DB
-	Queries *Queries
+type SQLStore struct {
+	db *sql.DB
+	*Queries
 }
 
 // NewStore is a constructor that initializes and returns pointer to a Store instance.
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
 // Executes a function within a db transaction
-func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) error {
 	// Start a new transaction using BeginTx
 	// You can set custom isolation levels here
 	tx, err := store.db.BeginTx(ctx, nil)
@@ -62,7 +67,7 @@ type TransferTxResult struct {
 
 // TransferTx performs a money transfer from one account to the other.
 // It creates the transfer, add account entries, and update accounts' balance within a database transaction
-func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 
 	err := store.execTx(ctx, func(q *Queries) error {
