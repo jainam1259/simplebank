@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	mock_db "github.com/jainam1259/simplebank/db/mock"
+	mockdb "github.com/jainam1259/simplebank/db/mock"
 	db "github.com/jainam1259/simplebank/db/sqlc"
 	"github.com/jainam1259/simplebank/util"
 	"github.com/stretchr/testify/require"
@@ -23,13 +23,13 @@ func TestGetAccountAPI(t *testing.T) {
 	testCases := []struct {
 		name          string
 		accountID     int64
-		buildStubs    func(store *mock_db.MockStore)
+		buildStubs    func(store *mockdb.MockStore)
 		checkResponse func(t *testing.T, recorder *httptest.ResponseRecorder)
 	}{
 		{
 			name:      "OK",
 			accountID: account.ID,
-			buildStubs: func(store *mock_db.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account.ID)).Times(1).Return(account, nil)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -40,7 +40,7 @@ func TestGetAccountAPI(t *testing.T) {
 		{
 			name:      "NotFound",
 			accountID: account.ID,
-			buildStubs: func(store *mock_db.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account.ID)).Times(1).Return(db.Account{}, sql.ErrNoRows)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -50,7 +50,7 @@ func TestGetAccountAPI(t *testing.T) {
 		{
 			name:      "InternalError",
 			accountID: account.ID,
-			buildStubs: func(store *mock_db.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Eq(account.ID)).Times(1).Return(db.Account{}, sql.ErrConnDone)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -60,7 +60,7 @@ func TestGetAccountAPI(t *testing.T) {
 		{
 			name:      "InvalidID",
 			accountID: 0,
-			buildStubs: func(store *mock_db.MockStore) {
+			buildStubs: func(store *mockdb.MockStore) {
 				store.EXPECT().GetAccount(gomock.Any(), gomock.Any()).Times(0)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
@@ -76,7 +76,7 @@ func TestGetAccountAPI(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			store := mock_db.NewMockStore(ctrl)
+			store := mockdb.NewMockStore(ctrl)
 			tc.buildStubs(store)
 
 			// start test http server and send request
