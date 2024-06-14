@@ -58,5 +58,4 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		return nil, ErrInvalidToken
 	}
 	return payload, nil
-
 }
