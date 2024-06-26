@@ -1,6 +1,6 @@
 # Simple Bank Project
 
-This repository contains the source code for the Simple Bank project, a backend application for managing bank accounts and transactions.
+This project contains the source code for the Simple Bank project, a backend application for managing bank accounts and transactions.
 The project is in development and currently uses Golang, Docker, and AWS, with a focus on best practices for software development, testing, and deployment.
 
 ## Currently Implemented Features
@@ -45,3 +45,6 @@ The project is in development and currently uses Golang, Docker, and AWS, with a
 - **Gomock**: Mocking framework for testing
 - **PASETO**: Token-based authentication
 - **GitHub Actions**: CI/CD pipeline**
+
+## Attribution
+This project is based on the [simplebank](https://github.com/techschool/simplebank) project by [techschool](https://github.com/techschool). All credit for the original code goes to techschool.
